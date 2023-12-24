@@ -1,0 +1,69 @@
+---
+- name: playbook_core.yml - debian base setup
+  hosts: all
+  become: yes
+
+  tasks:
+
+# ARCH FULL UPDATE  ----------------------------------------------------------
+
+    - name: update debian
+      apt:
+        update_cache: yes
+        upgrade: yes
+        autoremove: yes
+        autoclean: yes
+
+# INSTALL VARIOUS PACKAGES  --------------------------------------------------
+
+    - name: install bunch of packages
+      apt:
+        update_cache: yes
+        name:
+          - nano      # editor
+          - micro     # editor
+          - man-db    # help pages manuals
+          - git       # to clone github repos
+          - curl      # download utility
+          - wget      # download utility
+          - rsync     # copy utility
+          - nnn       # file manager
+          - fzf       # fuzzy filter useful for file search
+          - bat       # prettier cat
+          - tree      # show file structure
+          - unar      # extract archives
+          - duf       # prettier df
+          - ncdu      # track space use
+          - htop      # monitor hardware use
+          - btop      # best monitor hardware use
+          - iotop     # monitor disk use
+          - nethogs   # monitor network
+          - nmap      # scan network
+          - netcat-traditional  # diagnose network issues with nc tiny server
+          - tcpdump   # diagnose network issues, watch traffic at port
+          - net-tools # some network utilities
+          - iproute2  # some network utilities
+          - dnsutils  # dns diagnose, containst the great nslookup utility
+          - nload     # diagnose network issues, watch traffic
+          - sysfsutils  # contains utility systool that shows hardware components
+          - lsof      # list open files utility
+          - fuse      # allows mounting more filesystems?
+          - sqlite3   # simple database, allows scripts that dump db backups
+
+# PACKAGES THAT NEEDS SOME WORK  ----------------------------------------------
+
+  # - fd-find # needs some tinkering cuz fd already exists for debian
+
+
+  # FASTFETCH
+  tasks:
+    - name: Download deb file
+      copy:
+        src: https://github.com/fastfetch-cli/fastfetch/releases/download/2.4.0/fastfetch-2.4.0-Linux.deb
+        dest: /tmp/fastfetch-2.4.0.deb
+
+    - name: Install fastfetch
+      dpkg:
+        deb: /tmp/fastfetch-2.4.0.deb
+        state: present
+
