@@ -26,9 +26,9 @@ One should be able to look at them, see how stuff is done and make own changes.
 install Debian, log in to a non root account that can sudo
 
 * install ansible and git<br>
-  `sudo pacman -S ansible git`
+  `sudo apt install ansible git python-is-python3`
 *  clone this repo<br>
-  `git clone https://github.com/DoTheEvo/ansible-arch.git`
+  `git clone https://github.com/DoTheEvo/ansible-debian.git`
 * enter the directory<br>
   `cd ansible-arch`
 * run the playbooks you want

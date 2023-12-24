@@ -1,8 +1,10 @@
 # ----------------------------------------------------------------------------
 # BASIC ENVIRONMENTAL VARIABLES  ---------------------------------------------
-
 export EDITOR=micro
 export VISUAL=micro
+
+# since old man debian lacks terminfo alacritty file
+export TERM=xterm-256color
 
 # ----------------------------------------------------------------------------
 # ALIASES  -------------------------------------------------------------------
