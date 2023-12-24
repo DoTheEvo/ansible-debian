@@ -56,14 +56,13 @@
 
 
   # FASTFETCH
-  tasks:
-    - name: Download deb file
-      copy:
-        src: https://github.com/fastfetch-cli/fastfetch/releases/download/2.4.0/fastfetch-2.4.0-Linux.deb
-        dest: /tmp/fastfetch-2.4.0.deb
+  # tasks:
+  #   - name: Download deb file
+  #     copy:
+  #       src: https://github.com/fastfetch-cli/fastfetch/releases/download/2.4.0/fastfetch-2.4.0-Linux.deb
+  #       dest: /tmp/fastfetch-2.4.0.deb
 
     - name: Install fastfetch
-      dpkg:
-        deb: /tmp/fastfetch-2.4.0.deb
-        state: present
+      apt:
+        deb: https://github.com/fastfetch-cli/fastfetch/releases/download/2.4.0/fastfetch-2.4.0-Linux.deb
 
