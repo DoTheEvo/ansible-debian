@@ -30,7 +30,7 @@ install Debian, log in to a non root account that can sudo
 *  clone this repo<br>
   `git clone https://github.com/DoTheEvo/ansible-debian.git`
 * enter the directory<br>
-  `cd ansible-arch`
+  `cd ansible-debian`
 * run the playbooks you want
     * `ansible-playbook -u $USER -K playbook_core.yml`
     * `ansible-playbook -u $USER -K playbook_zsh.yml`

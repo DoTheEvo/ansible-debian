@@ -1,0 +1,29 @@
+---
+- name: playbook_core.yml - debian base setup
+  hosts: all
+  become: yes
+
+  vars_prompt:
+
+    - name: domain
+      prompt: What will be the domain name?
+      private: false
+
+  tasks:
+
+    - name: Create a caddy_net docker network
+      community.docker.docker_network:
+        name: caddy_net
+
+    - name: copy docker directory
+      become: no
+      copy:
+        src: docker
+        dest: ~/docker
+        mode: 0644
+
+    - name: replace example.com with domain given
+      replace:
+        path: ~/home/docker/caddy/.env
+        regexp: 'example.com'
+        replace: "{{domain}}"

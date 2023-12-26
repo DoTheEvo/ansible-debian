@@ -7,6 +7,9 @@ export VISUAL=micro
 # BUT COPY ONE FROM ARCH TO /usr/lib/terminfo/a IS PREFERABLE
 # export TERM=xterm-256color
 
+# FIX FOR ctop NOT RUNNING IF TERM IS ALACRITTY
+alias ctop='TERM=xterm-256color ctop'
+
 # ----------------------------------------------------------------------------
 # ALIASES  -------------------------------------------------------------------
 
