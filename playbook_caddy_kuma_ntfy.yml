@@ -19,11 +19,12 @@
       become: no
       copy:
         src: docker
-        dest: ~/docker
+        dest: ~/
         mode: 0644
 
     - name: replace example.com with domain given
+      become: no
       replace:
-        path: ~/home/docker/caddy/.env
+        path: ~/docker/caddy/.env
         regexp: 'example.com'
         replace: "{{domain}}"
