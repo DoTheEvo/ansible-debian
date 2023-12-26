@@ -60,5 +60,5 @@
     - name: copy alacritty to terminfo
       copy:
         src: ./alacritty
-        dest: /usr/share/terminfo/a/
+        dest: /usr/lib/terminfo/a
         mode: '0644'

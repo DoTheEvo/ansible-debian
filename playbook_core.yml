@@ -20,49 +20,135 @@
       apt:
         update_cache: yes
         name:
-          - nano      # editor
-          - micro     # editor
-          - man-db    # help pages manuals
-          - git       # to clone github repos
-          - curl      # download utility
-          - wget      # download utility
-          - rsync     # copy utility
-          - nnn       # file manager
-          - fzf       # fuzzy filter useful for file search
-          - bat       # prettier cat
-          - tree      # show file structure
-          - unar      # extract archives
-          - duf       # prettier df
-          - ncdu      # track space use
-          - htop      # monitor hardware use
-          - btop      # best monitor hardware use
-          - iotop     # monitor disk use
-          - nethogs   # monitor network
-          - nmap      # scan network
+          - nano                # editor
+          - micro               # editor
+          - man-db              # help pages manuals
+          - git                 # to clone github repos
+          - curl                # download utility
+          - wget                # download utility
+          - rsync               # copy utility
+          - nnn                 # file manager
+          - fzf                 # fuzzy filter useful for file search
+          - bat                 # prettier cat
+          - tree                # show file structure
+          - unar                # extract archives
+          - duf                 # prettier df
+          - ncdu                # track space use
+          - htop                # monitor hardware use
+          - btop                # best monitor hardware use
+          - iotop               # monitor disk use
+          - nethogs             # monitor network
+          - nmap                # scan network
           - netcat-traditional  # diagnose network issues with nc tiny server
-          - tcpdump   # diagnose network issues, watch traffic at port
-          - net-tools # some network utilities
-          - iproute2  # some network utilities
-          - dnsutils  # dns diagnose, containst the great nslookup utility
-          - nload     # diagnose network issues, watch traffic
-          - sysfsutils  # contains utility systool that shows hardware components
-          - lsof      # list open files utility
-          - fuse      # allows mounting more filesystems?
-          - sqlite3   # simple database, allows scripts that dump db backups
+          - tcpdump             # diagnose network issues, watch traffic at port
+          - net-tools           # some network utilities
+          - iproute2            # some network utilities
+          - dnsutils            # dns diagnose, containst the great nslookup utility
+          - nload               # diagnose network issues, watch traffic
+          - sysfsutils          # contains utility systool that shows hardware components
+          - lsof                # list open files utility
+          - fuse                # allows mounting more filesystems?
+          - sqlite3             # simple database, allows scripts that dump db backups
+          - plocate             # file search locate
 
 # PACKAGES THAT NEEDS SOME WORK  ----------------------------------------------
 
-  # - fd-find # needs some tinkering cuz fd already exists for debian
+  - name: install fd
+    apt:
+      name:
+        - fd-find
+
+  - name: fix fd being named fdfind on debian
+    file:
+      src: '/usr/local/bin/fdfind'
+      dest: '/usr/local/bin/fd'
+      state: link
 
 
   # FASTFETCH
-  # tasks:
-  #   - name: Download deb file
-  #     copy:
-  #       src: https://github.com/fastfetch-cli/fastfetch/releases/download/2.4.0/fastfetch-2.4.0-Linux.deb
-  #       dest: /tmp/fastfetch-2.4.0.deb
-
     - name: Install fastfetch
       apt:
         deb: https://github.com/fastfetch-cli/fastfetch/releases/download/2.4.0/fastfetch-2.4.0-Linux.deb
 
+# NNN ------------------------------------------------------------------------
+
+    - name: install nnn
+      apt:
+        name:
+          - nnn
+
+    - name: install nnn plugins
+      become: no
+      shell: "curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs | sh
+      "
+
+# FIXING TERMINAL ALACRITTY
+
+    - name: copy alacritty to terminfo
+      copy:
+        src: ./alacritty
+        dest: /usr/lib/terminfo/a
+        mode: '0644'
+
+
+# TRASH SETUP ----------------------------------------------------------------
+
+    - name: install trash-cli
+      apt:
+        name:
+          - trash-cli
+
+    - name: create trash-empty.service file
+      copy:
+        dest: '/etc/systemd/system/trash-empty.service'
+        content: |
+          [Unit]
+          Description=Empty trash older than 30 days
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/bin/trash-empty 30
+
+    - name: create trash-empty.timer file
+      copy:
+        dest: '/etc/systemd/system/trash-empty.timer'
+        content: |
+          [Unit]
+          Description=Empty trash older than 30 days daily
+
+          [Timer]
+          OnCalendar=daily
+          Persistent=true
+
+          [Install]
+          WantedBy=timers.target
+
+    - name: enable and start trash-empty.timer
+      systemd:
+        name: trash-empty.timer
+        enabled: yes
+        state: started
+
+# SETUP MICRO TEXT EDITOR  ---------------------------------------------------
+
+    - name: install micro text editor
+      apt:
+        name:
+          - micro
+
+    - name: copy config directory with prefernces, hotkeys, syntax highlight
+      become: no
+      copy:
+        src: .config/micro
+        dest: ~/.config
+        mode: 0644
+
+    - name: set default editor in .bashrc
+      become: no
+      blockinfile:
+        path: ~/.bashrc
+        block: |
+          export EDITOR=micro
+          export VISUAL=micro
+
+#  ---------------------------------------------------------------------------
